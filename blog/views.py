@@ -13,3 +13,15 @@ def index(request):
             'posts' : posts,
         }
     )
+
+def single_post_page(request, pk):
+    # .get : 쿼리에서 주어진 pk의 pk만 가져오겠다
+    post = Post.objects.get(pk=pk)
+
+    return render(
+        request,
+        'blog/single_post_page.html',
+        {
+            'post' : post,
+        }
+    )

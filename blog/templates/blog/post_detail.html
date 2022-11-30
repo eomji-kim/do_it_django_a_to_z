@@ -13,6 +13,7 @@
 
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'blog/css/styles.css' %}" rel="stylesheet" media="screen" />
+        <script src="https://kit.fontawesome.com/294b95ae3d.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <!-- Responsive navbar-->
@@ -55,8 +56,13 @@
                         <!-- Post content-->
                         <section class="mb-5">
                             {{ post.content }}
-
                         </section>
+                        {% if post.file_upload %}
+                        <a href="{{ post.file_upload.url }}" class="btn btn-outline-dark" role="button" download>
+                        <i class="fa-solid fa-file"></i> {{ post.get_file_name }}
+                        </a>
+                        {% endif %}
+                        <hr>
                     </article>
                     <!-- Comments section-->
                     <section class="mb-5">

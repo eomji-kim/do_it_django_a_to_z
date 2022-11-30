@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import ListView
+# from django.shortcuts import render
+from django.views.generic import ListView, DetailView
 from .models import Post
 
 class PostList(ListView):
@@ -9,6 +9,8 @@ class PostList(ListView):
     # template_name = 'blog/index.html'
     ordering = '-pk'
 
+class PostDetail(DetailView):
+    model = Post
 
 
 # templates 폴더에 들어있는 것이 기본 값
@@ -24,14 +26,14 @@ class PostList(ListView):
 #         }
 #     )
 
-def single_post_page(request, pk):
-    # .get : 쿼리에서 주어진 pk의 pk만 가져오겠다
-    post = Post.objects.get(pk=pk)
-
-    return render(
-        request,
-        'blog/single_post_page.html',
-        {
-            'post' : post,
-        }
-    )
+# def single_post_page(request, pk):
+#     # .get : 쿼리에서 주어진 pk의 pk만 가져오겠다
+#     post = Post.objects.get(pk=pk)
+#
+#     return render(
+#         request,
+#         'blog/post_detail.html',
+#         {
+#             'post' : post,
+#         }
+#     )

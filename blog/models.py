@@ -2,6 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 import os
 
+class Category(models.Model) :
+    name = models.CharField(max_length=50, unique=True)
+
+    # slug : url을 생성하기 위해 문자를 조합하는 방식
+    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
+
 class Post(models.Model):
     title = models.CharField(max_length=30)
     hook_text = models.CharField(max_length=100, blank=True)
@@ -10,13 +23,12 @@ class Post(models.Model):
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)
     file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True)
 
-    # auto_now_add : 현 시간에 맞추고, 없으면 추가하기
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    # author : 외래키 추후 작성 예정
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
+    category = models.ForeignKey(Category, null=True, blank=True,
+                                 on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'[{self.pk}] {self.title} :: {self.author}'
@@ -29,3 +41,4 @@ class Post(models.Model):
 
     def get_file_ext(self):
         return self.get_file_name().split('.')[-1]
+

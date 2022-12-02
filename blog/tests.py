@@ -46,6 +46,37 @@ class TestView(TestCase) :
         self.post_003.tags.add(self.tag_python_kor)
         self.post_003.tags.add(self.tag_python)
 
+
+    def test_create_post(self):
+        # 로그인하지 않으면 status code가 200이면 안된다.
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        # 로그인을 한다.
+        self.client.login(username='trump', password='somepassword')
+
+        respones = self.client.get('/blog/create_post/')
+        self.assertEqual(respones.status_code, 200)
+        soup = BeautifulSoup(respones.content, 'html.parser')
+
+        self.assertEqual('Create Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Create New Post', main_area.text)
+
+        # 포스트 작성 페이지에서 블로그 포스트를 작성한 후 <submit> 버튼을 클릭하는 행위 구현
+        self.client.post(
+            '/blog/create_post/',
+            {
+                'title': 'Post Form 만들기',
+                'content': "Post Form 페이지를 만듭시다.",
+            }
+        )
+        self.assertEqual(Post.objects.count(), 4)
+        last_post = Post.objects.last()
+        self.assertEqual(last_post.title, "Post Form 만들기")
+        self.assertEqual(last_post.author.username, 'trump')
+
+
     def test_tag_page(self):
         response = self.client.get(self.tag_hello.get_absolute_url())
         self.assertEqual(response.status_code, 200)

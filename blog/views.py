@@ -1,6 +1,22 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView, CreateView
 from .models import Post, Category, Tag
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+# 믹스인 : 클래스를 상속하지 않고도 메소드를 조합할 수 있는 기법 혹은 개념(객체지향 프로그램의 범용적인 용어이자 표현)
+class PostCreate(LoginRequiredMixin, CreateView):
+    model = Post
+    # Post 모델에 사용할 필드명을 리스트로 작성.
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+
+    def form_valid(self, form):
+        current_user = self.request.user
+        if current_user.is_authenticated:
+            form.instance.author =  current_user
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog/')
 
 
 class PostList(ListView):
@@ -14,6 +30,7 @@ class PostList(ListView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
+
 class PostDetail(DetailView):
     model = Post
 
@@ -26,6 +43,7 @@ class PostDetail(DetailView):
         # 을 'no_category_post_count'라는 키에 저장.
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
+
 
 def category_page(request, slug):
     if slug == 'no_category':
@@ -46,7 +64,6 @@ def category_page(request, slug):
         }
     )
 
-
 def tag_page(request, slug):
     tag = Tag.objects.get(slug=slug)
     post_list = tag.post_set.all()
@@ -61,3 +78,4 @@ def tag_page(request, slug):
             'no_category_post_count': Post.objects.filter(category=None).count(),
         }
     )
+

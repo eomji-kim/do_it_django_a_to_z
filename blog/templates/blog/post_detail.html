@@ -32,7 +32,7 @@
 
 
                             <!-- Post categories-->
-                            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
+                            <a class="badge bg-dark text-decoration-none link-light" href="#!">Web Design</a>
                             <a class="badge bg-dark text-decoration-none link-light" href="#!">Freebies</a>
                         </header>
                         <!-- Preview image figure-->
@@ -45,7 +45,7 @@
                         </figure>
                         <!-- Post content-->
                         <section class="mb-5">
-                            {{ post.content }}
+                            {{ post.get_content_markdown | safe }}
                         </section>
 
                         {% if post.tags.exists %}

@@ -13,6 +13,9 @@ class TestView(TestCase) :
             username='obama', password='somepassword'
         )
 
+        self.user_obama.is_staff = True
+        self.user_obama.save()
+
         self.category_programming = Category.objects.create(name="programming",
                                                             slug="programming")
         self.category_music = Category.objects.create(name="music",
@@ -52,8 +55,12 @@ class TestView(TestCase) :
         response = self.client.get('/blog/create_post/')
         self.assertNotEqual(response.status_code, 200)
 
-        # 로그인을 한다.
         self.client.login(username='trump', password='somepassword')
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        # 로그인을 한다.
+        self.client.login(username='obama', password='somepassword')
 
         respones = self.client.get('/blog/create_post/')
         self.assertEqual(respones.status_code, 200)
@@ -74,7 +81,7 @@ class TestView(TestCase) :
         self.assertEqual(Post.objects.count(), 4)
         last_post = Post.objects.last()
         self.assertEqual(last_post.title, "Post Form 만들기")
-        self.assertEqual(last_post.author.username, 'trump')
+        self.assertEqual(last_post.author.username, 'obama')
 
 
     def test_tag_page(self):

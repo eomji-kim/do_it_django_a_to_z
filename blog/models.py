@@ -5,7 +5,8 @@ import os
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
+    # slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
+    slug = models.SlugField(max_length=50, allow_unicode=True)
 
     def __str__(self):
         return self.name
@@ -21,6 +22,7 @@ class Category(models.Model):
     # slug : url을 생성하기 위해 문자를 조합하는 방식
     # SlugField : 사람이 읽을 수 있는 텍스트로 고유 url을 만들고 싶을 때 주로 사용.
     # 이 때, SlugField는 한국어를 지원하지 않으므로 allow_unicode=True로 한글로 만들 수 있게 함.
+    # slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
     slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
 
     def __str__(self):

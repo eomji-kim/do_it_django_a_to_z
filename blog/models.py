@@ -7,8 +7,8 @@ import os
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    # slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
-    slug = models.SlugField(max_length=50, allow_unicode=True)
+    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
+    # slug = models.SlugField(max_length=50, allow_unicode=True)
 
     def __str__(self):
         return self.name
@@ -73,3 +73,19 @@ class Post(models.Model):
     def get_content_markdown(self):
         return markdown(self.content)
 
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    # CharField : 최대 길이 정의가 필요(단일 라인 입력), TextField : 그 외(다중 행 크기 조정 가능한 입력)
+    content = models.TextField()
+    # created_at 처음 생성될 때 시간을 저장 auto_now_add=True,
+    created_at = models.DateTimeField(auto_now_add=True)
+    # modified_at 저장될 때 시간을 저장 auto_now=True
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.author}::{self.content}'
+
+    def get_absolute_url(self):
+        return f'{self.post.get_absolute_url()}#comment-{self.pk}'

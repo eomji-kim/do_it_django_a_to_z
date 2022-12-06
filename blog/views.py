@@ -1,12 +1,26 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 from .forms import CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
-#
+
+
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+
+    def dispatch(self, request, *args, **kwargs):
+        # 댓글 작성자와 로그인한 사용자가 다른 경우 PermissionDenied 오류가 발생하도록
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            # PermissionDenied 의 사용자가 요청 된 작업을 수행 할 수있는 권한이 없는 경우 예외가 발생합니다.
+            raise PermissionDenied
+
+
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post

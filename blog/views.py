@@ -117,6 +117,8 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 class PostList(ListView):
     model = Post
     ordering = '-pk'
+    # 한페이지에 5개만 보여주겠다.
+    paginate_by = 5
 
     # **kwargs : 딕셔너리 형태로 처리.
     def get_context_data(self, **kwargs):

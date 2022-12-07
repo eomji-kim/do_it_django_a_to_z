@@ -6,3 +6,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         # exclude = ('post', 'author', 'created_at', 'modified_at', ) 로도 사용 가능
         fields = ('content',)
+        labels = {
+            'content': "댓글 내용",
+        }

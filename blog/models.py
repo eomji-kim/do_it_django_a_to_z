@@ -90,6 +90,7 @@ class Comment(models.Model):
     # modified_at 저장될 때 시간을 저장 auto_now=True
     modified_at = models.DateTimeField(auto_now=True)
 
+
     def __str__(self):
         return f'{self.author}::{self.content}'
 
